@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Sugar Rush Online</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: url('https://estudiarcocina.com/wp-content/uploads/2023/04/Que-es-la-Reposteria-1024x576.jpg') no-repeat center center fixed;
+      background-size: cover;
+      margin: 0;
+      padding: 0;
+    }
+
+    .chat-container {
+      width: 400px;
+      max-width: 90%;
+      margin: 50px auto;
+      background-color: rgba(255, 192, 203, 0.9);
+      border-radius: 15px;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #fff;
+      text-shadow: 2px 2px 5px #000;
+    }
+
+    .chat-box {
+      height: 300px;
+      overflow-y: auto;
+      background: #fff;
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    .message {
+      margin: 5px 0;
+      padding: 8px 12px;
+      border-radius: 10px;
+      max-width: 75%;
+      clear: both;
+    }
+
+    .bot {
+      background: #f8b6c1;
+      float: left;
+    }
+
+    .user {
+      background: #d1f7d6;
+      float: right;
+    }
+
+    .input-area {
+      display: flex;
+      gap: 10px;
+    }
+
+    input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 10px;
+      background-color: #ff6699;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #ff3366;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <h1>Sugar Rush Online 🍰</h1>
+    <div class="chat-box" id="chatBox">
+      <div class="message bot">¡Hola! Bienvenido a Sugar Rush Online 💖.<br>
+        Pregúntame lo que quieras, aquí siempre tendrás la carta disponible.
+      </div>
+    </div>
+    <div class="input-area">
+      <input type="text" id="userInput" placeholder="Escribe tu mensaje...">
+      <button onclick="sendMessage()">Enviar</button>
+    </div>
+  </div>
+
+  <script>
+    const menu = {
+      "galleta": { nombre: "Galleta de chispas de chocolate", precio: 3 },
+      "galletas": { nombre: "Galleta de chispas de chocolate", precio: 3 },
+      "cheesecake": { nombre: "Cheesecake", precio: 7 },
+      "gelatina": { nombre: "Gelatina", precio: 1.5 },
+      "torta": { nombre: "Torta de chocolate", precio: 6 },
+      "alfajor": { nombre: "Alfajor", precio: 2 },
+      "alfajores": { nombre: "Alfajor", precio: 2 },
+      "crema": { nombre: "Crema volteada", precio: 5 }
+    };
+
+    function sendMessage() {
+      const input = document.getElementById("userInput");
+      const message = input.value.trim();
+      if (message === "") return;
+
+      addMessage(message, "user");
+
+      setTimeout(() => {
+        let response = getBotResponse(message);
+        addMessage(response, "bot");
+      }, 500);
+
+      input.value = "";
+    }
+
+    function addMessage(text, sender) {
+      const chatBox = document.getElementById("chatBox");
+      const messageDiv = document.createElement("div");
+      messageDiv.className = "message " + sender;
+      messageDiv.innerHTML = text;
+      chatBox.appendChild(messageDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function getBotResponse(input) {
+      input = input.toLowerCase();
+
+      // Detectar pedido
+      if (input.includes("quiero") || input.includes("comprar")) {
+        let total = 0;
+        let detalle = "";
+
+        for (let key in menu) {
+          if (input.includes(key)) {
+            // Buscar cantidad
+            let regex = new RegExp("(\\d+)\\s*" + key);
+            let match = input.match(regex);
+            let cantidad = match ? parseInt(match[1]) : 1;
+
+            let subtotal = cantidad * menu[key].precio;
+            total += subtotal;
+            detalle += `✅ ${cantidad} x ${menu[key].nombre} = S/ ${subtotal.toFixed(2)}<br>`;
+          }
+        }
+
+        if (total > 0) {
+          return `Hemos tomado tu pedido:<br><br>${detalle}<br><b>Total: S/ ${total.toFixed(2)}</b> 💖`;
+        } else {
+          return "No reconocí los productos de tu pedido 😅. Intenta escribir, por ejemplo: 'Quiero 2 cheesecakes y 1 gelatina'.";
+        }
+      }
+
+      // Si no es un pedido, muestra la carta
+      return "Aquí está nuestra carta 🍰:<br><br>" +
+             "🍪 Galletas de chispas de chocolate - S/ 3<br>" +
+             "🍰 Cheesecake - S/ 7<br>" +
+             "🍮 Gelatina - S/ 1.5<br>" +
+             "🍫 Torta de chocolate - S/ 6<br>" +
+             "🥮 Alfajores - S/ 2<br>" +
+             "🍮 Crema volteada - S/ 5<br><br>" +
+             "Si deseas comprar algo, escribe por ejemplo: <br><i>'Quiero 2 cheesecakes y 1 gelatina'</i>.";
+    }
+  </script>
+</body>
+</html>
